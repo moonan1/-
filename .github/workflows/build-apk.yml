@@ -27,8 +27,10 @@ jobs:
 
       - name: APK 만들기
         working-directory: SmartPillBox/android
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
+          if [ -z "$DATA_GO_KR_KEY" ]; then echo "주의: DATA_GO_KR_KEY 비밀값이 없어 약 검색이 꺼진 채로 빌드됩니다"; fi
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           chmod +x gradlew
           ./gradlew assembleDebug --stacktrace
