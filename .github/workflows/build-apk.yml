@@ -1,0 +1,39 @@
+name: APK 빌드
+
+on:
+  push:
+    paths:
+      - '*.zip'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 프로젝트 압축 풀기
+        run: |
+          ZIP=$(ls -t *.zip | head -1)
+          echo "사용할 압축 파일: $ZIP"
+          unzip -q -o "$ZIP"
+          ls
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: APK 만들기
+        working-directory: SmartPillBox/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: APK 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: yaksok-apk
+          path: SmartPillBox/android/app/build/outputs/apk/debug/*.apk
