@@ -14,8 +14,9 @@ jobs:
 
       - name: 프로젝트 압축 풀기
         run: |
-          ZIP=$(ls -t *.zip | head -1)
+          ZIP=$(ls *.zip | sort -V | tail -1)
           echo "사용할 압축 파일: $ZIP"
+          rm -rf SmartPillBox
           unzip -q -o "$ZIP"
           ls
 
